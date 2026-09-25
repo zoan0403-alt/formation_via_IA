@@ -38,8 +38,26 @@
 - Introduire : conflits de merge Git (simulation volontaire), `git log` en détail, `git clone`.
 - Spring Boot : commencer à coder en autonomie réelle (pas juste expliquer) — proposer un petit ajout de fonctionnalité sur `Produit` ou `Livre` à réaliser seul, avec guidage minimal, pour valider le "80% autonome" annoncé.
 
-## Niveau global (après 1 séance)
+### Séance du 2026-09-25 (suite) — Mise en pratique Spring Boot : recherche par fourchette de prix
+
+Exercice réalisé en autonomie quasi complète (guidage par questions uniquement, aucun code fourni) : ajout d'un endpoint `GET /api/produits/recherche?prixMin=&prixMax=` sur les 3 couches (repository/service/controller), avec validation et test réel via Postman.
+
+**Bugs introduits puis corrigés seul (après questionnement, jamais donné directement) :**
+1. Condition `if(min >= min)` puis `if(min > min)` (comparaison d'une variable à elle-même) au lieu de `min > max` — révélateur d'un manque de rigueur à la relecture, corrigé après un tracé d'exécution à la main avec valeurs concrètes.
+2. Code HTTP incohérent avec sa propre réponse orale de quelques minutes plus tôt (`NOT_FOUND` au lieu de `BAD_REQUEST`) — signe qu'il ne relit pas systématiquement son code par rapport à ses propres décisions de conception.
+3. Mauvaise annotation controller : `@PathVariable` puis `@QuerydslPredicate` (inventée/confondue) au lieu de `@RequestParam` — lacune de vocabulaire Spring MVC de base, comblée par indice ciblé (pas de raisonnement possible ici, connaissance factuelle manquante).
+4. **Chemin dupliqué par concaténation `@RequestMapping` (classe) + `@GetMapping` (méthode)** → route jamais atteinte, tombait sur `/{id}` avec `MethodArgumentTypeMismatchException`. Bug le plus difficile pour lui à percevoir (confirmé par l'élève lui-même en fin de séance) : chaque ligne de code est syntaxiquement correcte, l'erreur n'existe qu'au niveau de la composition entre les deux annotations. **Point de vigilance pédagogique : à retravailler explicitement (mapping Spring MVC, préfixes de classe).**
+5. Erreur de syntaxe URL (`&?prixMax=` avec un `?` en trop) — étourderie, corrigée rapidement une fois pointée.
+6. Slash final sur `/api/produits/` en POST alors que le mapping est `/api/produits` — bien identifié et corrigé seul après qu'on ait pointé la comparaison, bon signe de progression dans le débogage méthodique.
+
+**Points positifs observés :**
+- A mené tout le débogage (404 puis 400 puis erreurs Postman) de façon méthodique une fois la méthode de "tracer avant de conclure" imposée — n'a plus tenté de deviner à l'aveugle en fin d'exercice (ex: bug du slash final, corrigé seul).
+- A correctement diagnostiqué "la base est vide" comme cause probable d'un résultat vide (raisonnement JPA/H2 correct), tout en acceptant la distinction qu'on lui a apportée entre "liste vide" (200 OK) et "route non trouvée" (404) sans s'entêter.
+- A construit seul le JSON de test POST à partir de la lecture de l'entité `Produit` (bons types, bonne syntaxe), sans qu'on le lui écrive.
+- Métacognition en fin d'exercice cohérente et honnête : a identifié lui-même le bug de mapping dupliqué comme le plus difficile, avec une explication correcte de pourquoi (bug de composition, pas de syntaxe).
+
+## Niveau global (après 1 séance, 2 exercices)
 
 - **Git : débutant → notions de base acquises (niveau "junior encadré").** Capable d'exécuter le cycle add/commit/push/branch/merge avec supervision légère ; pas encore autonome sur la résolution de problèmes imprévus (conflits, erreurs complexes).
-- **Spring Boot : intermédiaire théorique, à valider en pratique.** Bonne compréhension du "quoi" et du "pourquoi" quand guidé ; le "80% autonome" en écriture de code reste à prouver par une mise en situation réelle de code, pas encore testée.
-- **Méthode de travail : point fort à noter** — bon raisonnement déductif sous guidage, honnêteté sur les lacunes, réflexe de vérification qui se développe (à consolider pour qu'il devienne systématique et spontané).
+- **Spring Boot : le "80% autonome" annoncé en début de séance est globalement confirmé au niveau de l'exécution (a écrit repository/service/controller quasi seul), mais avec une fiabilité de première passe faible — 6 bugs sur un exercice d'une seule méthode à 3 couches.** Sa vraie force est ailleurs : la **correction** une fois le bug pointé est rapide et le raisonnement de debug progresse nettement en cours de séance (de "deviner" à "tracer méthodiquement"). Lacune vocabulaire Spring MVC de base à combler (annotations `@RequestParam` etc. pas encore internalisées).
+- **Méthode de travail : point fort confirmé** — bon raisonnement déductif sous guidage, honnêteté sur les lacunes, réflexe de vérification qui se développe. **Point à travailler explicitement la prochaine fois : relire son propre code avant de le soumettre (cohérence avec ses propres décisions de conception, relecture des conditions), plutôt que compter sur le débogage a posteriori.**
