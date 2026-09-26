@@ -2,7 +2,6 @@ package com.example.CRUD1.controller;
 
 import com.example.CRUD1.dto.LivreRequestDTO;
 import com.example.CRUD1.dto.LivreResponseDTO;
-import com.example.CRUD1.entity.Livre;
 import com.example.CRUD1.mapper.LivreMapper;
 import com.example.CRUD1.service.LivreService;
 import jakarta.validation.Valid;

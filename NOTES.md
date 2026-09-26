@@ -6,5 +6,6 @@
 #git push
 #git add nomdufichier
 #git switch -c nom-de-la-branche
+#git merge nom de la branche
 
 #test de la branche

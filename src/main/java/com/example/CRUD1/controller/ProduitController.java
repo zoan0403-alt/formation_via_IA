@@ -6,7 +6,6 @@ import com.example.CRUD1.entity.Produit;
 import com.example.CRUD1.mapper.ProduitMapper;
 import com.example.CRUD1.service.ProduitService;
 import jakarta.validation.Valid;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +36,7 @@ public class ProduitController {
     public ProduitResponseDTO create(@Valid @RequestBody ProduitRequestDTO dto){
         Produit produit=ProduitMapper.toEntity(dto);
         produit=produitService.ajouter(produit);
-         ProduitResponseDTO sortieP=ProduitMapper.toResponseDTO(produit);
-        return sortieP;
+         return ProduitMapper.toResponseDTO(produit);
     }
 
     @PutMapping("/{id}")

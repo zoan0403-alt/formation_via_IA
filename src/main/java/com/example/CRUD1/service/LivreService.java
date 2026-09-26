@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 @Service
 public class LivreService {
     private final LivreRepository livreRepository;
@@ -38,7 +37,9 @@ public class LivreService {
         Livre existant = rechercher(id);
         existant.setAuteur(livre.getAuteur());
         existant.setTitre(livre.getTitre());
-        existant.setDisponibiliter(livre.getDisponibiliter());
+        if(livre.getDisponibiliter()!=null){
+            existant.setDisponibiliter(livre.getDisponibiliter());
+        }
         existant.setAnneePublication(livre.getAnneePublication());
         return livreRepository.save(existant);
     }
