@@ -6,6 +6,7 @@ import com.example.CRUD1.entity.Auteur;
 import com.example.CRUD1.mapper.AuteurMapper;
 import com.example.CRUD1.service.AuteurService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class AuteurController {
     }
     //aujouter un auteur
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
     public AuteurResponseDTO insert(@Valid @RequestBody AuteurRequestDTO dto){
         return AuteurMapper.toRespondeDTO(auteurService.insert(AuteurMapper.toEntity(dto)));
     }
@@ -36,6 +38,7 @@ public class AuteurController {
     public List<AuteurResponseDTO> getAll(){return AuteurMapper.toResponseDTOList(auteurService.getAll());}
     //suppprimer un auteur
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){ auteurService.delete(id);}
 
 }
