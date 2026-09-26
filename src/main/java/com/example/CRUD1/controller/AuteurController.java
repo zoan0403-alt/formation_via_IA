@@ -23,16 +23,16 @@ public class AuteurController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public AuteurResponseDTO insert(@Valid @RequestBody AuteurRequestDTO dto){
-        return AuteurMapper.toRespondeDTO(auteurService.insert(AuteurMapper.toEntity(dto)));
+        return AuteurMapper.toResponseDTO(auteurService.insert(AuteurMapper.toEntity(dto)));
     }
     //modifier un auteur
     @PutMapping("/{id}")
     public AuteurResponseDTO update(@Valid @RequestBody AuteurRequestDTO dto,@PathVariable Long id){
-        return AuteurMapper.toRespondeDTO(auteurService.update(AuteurMapper.toEntity(dto),id));
+        return AuteurMapper.toResponseDTO(auteurService.update(AuteurMapper.toEntity(dto),id));
     }
     //rechercher un auteur
     @GetMapping("/{id}")
-    public AuteurResponseDTO getOne(@PathVariable Long id){return AuteurMapper.toRespondeDTO(auteurService.getOne(id));}
+    public AuteurResponseDTO getOne(@PathVariable Long id){return AuteurMapper.toResponseDTO(auteurService.getOne(id));}
     //liste de tous les auteurs
     @GetMapping()
     public List<AuteurResponseDTO> getAll(){return AuteurMapper.toResponseDTOList(auteurService.getAll());}

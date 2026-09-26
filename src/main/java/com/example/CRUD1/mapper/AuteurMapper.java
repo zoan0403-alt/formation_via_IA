@@ -12,13 +12,13 @@ public class AuteurMapper {
     public static Auteur toEntity(AuteurRequestDTO dto){
         return new Auteur(null,dto.getNom(), dto.getNationalite(), dto.getDateNaissance());
     }
-    public static AuteurResponseDTO toRespondeDTO(Auteur auteur){
+    public static AuteurResponseDTO toResponseDTO(Auteur auteur){
         return new AuteurResponseDTO(auteur.getId(), auteur.getNom(), auteur.getNationalite(), auteur.getDateNaissance());
     }
     public static List<AuteurResponseDTO> toResponseDTOList(List<Auteur> auteurs){
         List<AuteurResponseDTO> liste=new ArrayList<>();
         for(Auteur auteur: auteurs){
-            liste.add(toRespondeDTO(auteur));
+            liste.add(toResponseDTO(auteur));
         }
         return liste;
     }
