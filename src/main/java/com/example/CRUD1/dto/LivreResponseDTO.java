@@ -3,13 +3,13 @@ package com.example.CRUD1.dto;
 public class LivreResponseDTO {
     private Long id;
     private String titre;
-    private String auteur;
+    private AuteurResponseDTO auteur;
     private int anneePublication;
     private Boolean disponibiliter;
 
     public LivreResponseDTO() {}
 
-    public LivreResponseDTO(Long id, String titre, String auteur, int anneePublication, Boolean disponibiliter) {
+    public LivreResponseDTO(Long id, String titre, AuteurResponseDTO auteur, int anneePublication, Boolean disponibiliter) {
         this.id = id;
         this.titre = titre;
         this.auteur = auteur;
@@ -28,11 +28,11 @@ public class LivreResponseDTO {
         this.titre = titre;
     }
 
-    public String getAuteur() {
+    public AuteurResponseDTO getAuteur() {
         return auteur;
     }
 
-    public void setAuteur(String auteur) {
+    public void setAuteur(AuteurResponseDTO auteur) {
         this.auteur = auteur;
     }
 

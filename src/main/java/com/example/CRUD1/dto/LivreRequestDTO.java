@@ -1,13 +1,15 @@
 package com.example.CRUD1.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class LivreRequestDTO {
     @NotBlank(message = "Le titre ne peut etre vide.")
     private String titre;
-    @NotBlank(message = "le nom de l'auteur est obligatoire")
-    private String auteur;
+    @NotNull(message = "l'id de l'auteur est obligatoire")
+    @Positive(message = "l'id de l'auteur dit etre positif")
+    private Long auteurId;
     @Positive(message = "l'annees de piblication doit etre nom vide et possitif")
     private int anneePublication;
     //il peut ne pas fournie et par defaut on mets le livre comme disponible (true) voir service
@@ -15,9 +17,9 @@ public class LivreRequestDTO {
 
     public LivreRequestDTO() {}
 
-    public LivreRequestDTO(String titre, String auteur, int anneePublication, Boolean disponibiliter) {
+    public LivreRequestDTO(String titre, Long auteur, int anneePublication, Boolean disponibiliter) {
         this.titre = titre;
-        this.auteur = auteur;
+        this.auteurId = auteur;
         this.anneePublication = anneePublication;
         this.disponibiliter = disponibiliter;
     }
@@ -30,12 +32,12 @@ public class LivreRequestDTO {
         this.titre = titre;
     }
 
-    public String getAuteur() {
-        return auteur;
+    public Long getAuteurId() {
+        return auteurId;
     }
 
-    public void setAuteur(String auteur) {
-        this.auteur = auteur;
+    public void setAuteurId(Long auteurId) {
+        this.auteurId = auteurId;
     }
 
     public int getAnneePublication() {

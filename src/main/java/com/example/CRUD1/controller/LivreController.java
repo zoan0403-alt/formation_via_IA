@@ -34,13 +34,13 @@ public class LivreController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LivreResponseDTO inserer(@Valid @RequestBody LivreRequestDTO dto) {
-        return LivreMapper.toResponseDTO(livreService.inserer(LivreMapper.toEntity(dto)));
+        return LivreMapper.toResponseDTO(livreService.inserer(dto));
     }
 
     //modifier un livre
     @PutMapping("/{id}")
     public LivreResponseDTO modifier(@Valid @RequestBody LivreRequestDTO dto, @PathVariable Long id) {
-        return LivreMapper.toResponseDTO(livreService.modifier(LivreMapper.toEntity(dto), id));
+        return LivreMapper.toResponseDTO(livreService.modifier(dto, id));
     }
 
     //supprimer un livre
