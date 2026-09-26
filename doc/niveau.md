@@ -98,6 +98,29 @@ Suite directe du sujet identifié par l'élève lui-même en fin de séance pré
 - **Point d'attention pédagogique central, désormais documenté sur 2 séances consécutives** : les sujets nécessitant de tenir une vue d'ensemble abstraite en tête pendant plusieurs étapes techniques (mapping Spring MVC composé, puis `ControllerAdvice`) sont ceux où l'élève décroche — pas par manque de capacité (il recolle les morceaux correctement une fois le concept explicité), mais parce que la charge cognitive de "suivre des instructions techniques sans le fil conducteur" dépasse un seuil. **Action concrète pour la suite : toujours amorcer un nouveau concept architectural par un résumé du "pourquoi" avant la première ligne de code, même sans qu'il le demande.**
 - **Méthode de travail : son meilleur point reste sa capacité à dire honnêtement "je ne comprends pas" plutôt que de continuer à l'aveugle** — confirmé une deuxième fois, de façon plus franche encore que lors de la première séance. C'est la base sur laquelle construire toute la suite de la formation.
 
+## Séance du 2026-09-26 (suite) — DTO et mapping (`ProduitRequestDTO` / `ProduitResponseDTO`)
+
+Application directe de la leçon méthodologique tirée juste avant (poser le "pourquoi" avant le code). Résultat : **aucun décrochage cette fois**, séance fluide malgré un sujet tout aussi architectural que `ControllerAdvice`.
+
+**Déroulé du "pourquoi" :** l'élève a lui-même testé et provoqué un vrai bug de sécurité concret (POST avec un `id` imposé par le client → `500 Internal Server Error`, `ObjectOptimisticLockingFailureException` de Hibernate qui traite l'entité comme une mise à jour au lieu d'une création) et en a tiré seul le bon diagnostic ("le controller fait trop confiance au client") avant qu'on introduise le concept de DTO comme solution. **Confirmation forte de la leçon de la séance précédente : quand le "pourquoi" est vécu concrètement avant le code, l'élève reste engagé et ne décroche pas, même sur un sujet abstrait.**
+
+**Points forts observés :**
+- A conçu correctement, sans aide, la distinction DTO d'entrée (sans `id`) / DTO de sortie (avec `id`) et l'a justifiée correctement.
+- A proposé de lui-même de ne pas mettre de `setId()` sur le DTO de sortie, avec une justification défensive correcte (éviter la confusion/modification de l'identifiant) — bonne initiative de conception, pas demandée explicitement.
+- A identifié et corrigé lui-même, après une question orientée, un mélange de responsabilités (avoir ajouté un champ `message` de statut dans un DTO censé représenter uniquement un produit) — bon raisonnement de conception quand challengé, même si l'erreur initiale montre une tendance à enrichir une classe au-delà de son rôle strict sans qu'on le lui demande.
+- A correctement raisonné sur le déplacement des annotations de validation de l'entité vers le DTO d'entrée (suit la logique de `@Valid` plutôt que de la deviner au hasard).
+- A justifié correctement le choix de placer le mapping DTO↔Entité dans le controller plutôt que le service, en re-mobilisant sa propre définition des couches donnée en tout début de formation (bon signe de rétention à long terme, pas seulement à court terme).
+
+**Bug mineur persistant du même type que les séances précédentes** : a écrit deux fois `produit.setNom(dto.getNom())` en oubliant `setPrix(...)` — même famille d'erreur d'inattention/relecture que les séances 1 et 2 (copier-coller sans adapter, ou oubli d'une ligne). **Pattern maintenant confirmé sur 3 séances : l'élève ne relit pas systématiquement son code fraîchement écrit avant de le montrer.** C'est le point le plus constant et le plus actionnable à travailler explicitement (par exemple : lui demander systématiquement de relire lui-même avant de coller le code, plutôt que de le pointer à chaque fois).
+
+## Niveau global (après 2 séances, 5 exercices)
+
+- **Git : stable.**
+- **Spring Boot : progression continue et confirmée.** L'élève construit maintenant des couches d'abstraction (DTO) avec une bonne intuition de conception (séparation des responsabilités, immutabilité défensive), au-delà de la simple exécution d'instructions. Sa vitesse de correction reste rapide, sa capacité à justifier ses choix avec les concepts appris plus tôt dans la formation est un signal de compréhension réelle et durable, pas de mémorisation à court terme.
+- **Confirmation de la leçon méthodologique** : poser le "pourquoi" avant le code (idéalement via une démonstration concrète d'un problème réel, comme le crash provoqué ici) élimine le décrochage observé sur `ControllerAdvice`. **Cette méthode est à systématiser pour tout nouveau concept architectural.**
+- **Point à travailler en priorité maintenant** : la relecture systématique de son propre code avant de le soumettre. C'est un pattern stable depuis 3 séances (comparaisons erronées, incohérences avec ses propres choix, copier-coller non adapté) — pas une question de compréhension mais de rigueur/habitude. Prochaine étape suggérée : lui demander explicitement "relis ta méthode ligne par ligne avant de me la montrer" en début d'exercice, pour voir si la consigne explicite suffit à casser le pattern, avant de continuer à le corriger systématiquement nous-mêmes.
+
 ### Prochaine séance : sujets en attente
-- DTO et mapping (séparer l'entité JPA de ce qu'on expose/reçoit via l'API) — bon sujet suivant naturel après validation/erreurs, avec un "pourquoi" à poser clairement dès le départ (éviter d'exposer l'entité brute).
+- Finir le pattern DTO sur `getAll()`, `getOne()`, `update()` de `ProduitController` (répétition/consolidation, en autonomie si possible pour tester la rétention).
+- Appliquer DTO + validation + gestion d'erreurs au `LivreController` (généralisation à une autre entité, bon test de transfert).
 - Git avancé (conflits de merge, `pull`, `clone`) toujours en attente si l'élève préfère y revenir avant.
