@@ -120,7 +120,24 @@ Application directe de la leçon méthodologique tirée juste avant (poser le "p
 - **Confirmation de la leçon méthodologique** : poser le "pourquoi" avant le code (idéalement via une démonstration concrète d'un problème réel, comme le crash provoqué ici) élimine le décrochage observé sur `ControllerAdvice`. **Cette méthode est à systématiser pour tout nouveau concept architectural.**
 - **Point à travailler en priorité maintenant** : la relecture systématique de son propre code avant de le soumettre. C'est un pattern stable depuis 3 séances (comparaisons erronées, incohérences avec ses propres choix, copier-coller non adapté) — pas une question de compréhension mais de rigueur/habitude. Prochaine étape suggérée : lui demander explicitement "relis ta méthode ligne par ligne avant de me la montrer" en début d'exercice, pour voir si la consigne explicite suffit à casser le pattern, avant de continuer à le corriger systématiquement nous-mêmes.
 
+### Séance du 2026-09-26 (suite 2) — Extraction spontanée d'un `ProduitMapper`
+
+L'élève a posé de lui-même la question "y a-t-il un moyen plus rapide ?" en observant la répétition de son propre mapping DTO↔Entité — **initiative spontanée, pas suggérée**, bon signe d'esprit critique sur son propre code (dépasse la simple exécution de consignes).
+- A retrouvé seul l'analogie avec `GlobalExceptionHandler` (centraliser plutôt que dupliquer) quand on l'a orienté dessus.
+- A correctement raisonné que les méthodes de mapping n'ont pas besoin d'état → doivent être `static`, sans qu'on lui donne la réponse.
+- Erreur mineure sans conséquence : typo `toRespondeDTO` (lettres interverties) au lieu de `toResponseDTO` — cohérent avec le pattern d'inattention déjà documenté, mais sans impact fonctionnel ici (juste esthétique/lisibilité).
+- A câblé le mapper dans le controller sans erreur du premier coup cette fois — bon signe, la répétition du pattern (déjà fait 2 fois avec DTO/ControllerAdvice) commence à réduire le taux d'erreur de câblage.
+- A été informé de l'existence de MapStruct (mapping automatique par génération de code) comme prochaine étape possible une fois le mapping manuel bien maîtrisé — non encore abordé en pratique, à garder en tête pour plus tard.
+
+## Niveau global (après 2 séances, 5 exercices + 1 refactoring spontané)
+
+- **Git : stable.**
+- **Spring Boot : progression continue et confirmée.** L'élève construit maintenant des couches d'abstraction (DTO, Mapper) avec une bonne intuition de conception (séparation des responsabilités, immutabilité défensive, centralisation pour réduire la duplication), au-delà de la simple exécution d'instructions. Signal fort de cette séance : il a posé lui-même la question d'amélioration ("y a-t-il plus rapide ?") sans qu'on l'y invite — début d'un vrai réflexe de relecture critique de sa propre architecture, pas seulement de son code ligne à ligne (où le pattern d'inattention reste présent mais semble s'atténuer légèrement avec la répétition du même geste).
+- **Confirmation de la leçon méthodologique** : poser le "pourquoi" avant le code élimine le décrochage. Cette méthode a été appliquée avec succès sur 2 sujets consécutifs (DTO, Mapper) après l'avoir identifiée sur `ControllerAdvice`.
+- **Point à travailler toujours en priorité** : relecture systématique avant soumission — toujours présent mais fréquence d'erreurs de câblage en légère baisse sur les tâches répétées (le mapper a été branché sans bug, contrairement au premier mapping manuel).
+
 ### Prochaine séance : sujets en attente
-- Finir le pattern DTO sur `getAll()`, `getOne()`, `update()` de `ProduitController` (répétition/consolidation, en autonomie si possible pour tester la rétention).
-- Appliquer DTO + validation + gestion d'erreurs au `LivreController` (généralisation à une autre entité, bon test de transfert).
+- Finir le pattern DTO + Mapper sur `getAll()`, `getOne()`, `update()` de `ProduitController` (répétition/consolidation, en autonomie si possible pour tester la rétention).
+- Appliquer DTO + Mapper + validation + gestion d'erreurs au `LivreController` (généralisation à une autre entité, bon test de transfert).
+- Explorer MapStruct une fois le pattern manuel bien consolidé.
 - Git avancé (conflits de merge, `pull`, `clone`) toujours en attente si l'élève préfère y revenir avant.
