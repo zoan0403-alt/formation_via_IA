@@ -154,7 +154,33 @@ Terminé en quasi-autonomie complète (guidage minimal, principalement des quest
 - **Erreur récurrente restante, mais de plus en plus rare et de plus en plus vite auto-corrigée** : placement d'annotations sur le mauvais paramètre/objet (vu sur `@RequestParam` vs `@PathVariable`, sur `@ExceptionHandler`, maintenant sur `@Valid`). C'est un point de vocabulaire/habitude Spring MVC spécifique, pas un problème de compréhension du concept — à surveiller mais plus la peine d'insister dessus à chaque fois, une question suffit maintenant à corriger.
 - **Point suivant à surveiller** : est-ce que cette autonomie tient si on change de contexte (nouvelle entité, `LivreController`) plutôt que de rester sur `Produit` où le pattern a été répété 6 fois ? Bon test de transfert pour la prochaine séance.
 
+## Séance du 2026-09-26 (suite 4) — Transfert complet à `LivreController`, en autonomie
+
+Test de transfert : appliquer DTO + Mapper à une **nouvelle entité** (`Livre`), pas juste répéter sur `Produit`. **Résultat : transfert réussi, quasi sans guidage.**
+
+**Ce que l'élève a produit seul, sans découpage en étapes de ma part :**
+- `LivreRequestDTO` (sans `id`, annotations `@NotBlank`/`@Positive` correctement placées, y compris un champ `Boolean` optionnel `disponibiliter` avec un commentaire anticipant une valeur par défaut métier)
+- `LivreResponseDTO` (avec `id`)
+- `LivreMapper` (3 méthodes statiques, `toEntity`, conversion unité + liste, réutilisation interne correcte)
+- `LivreController` entièrement réécrit avec DTO partout, **`@Valid` bien placé du premier coup sur les deux méthodes `POST`/`PUT`** (zéro erreur de ce type qui revenait sur les exercices précédents)
+- Logique métier de valeur par défaut (`disponibiliter == null → true`) correctement implémentée dans le service dès la création — anticipée par l'élève lui-même, pas demandée.
+
+**Un vrai bug métier trouvé et corrigé par le raisonnement, pas par l'erreur** : sur `modifier()`, un `PUT` sans `disponibiliter` aurait écrasé la valeur existante avec `null`. Repéré uniquement par une question ("que devient la valeur si le client ne l'envoie pas en update ?"), sans que l'élève l'ait vu spontanément — mais correction immédiate et juste (`if (!= null) { ... }`) dès que la question a été posée. Différence notable avec les bugs précédents : ce n'est pas une faute d'inattention/copier-coller, c'est un vrai angle mort de conception (cas non-nominal non anticipé), plus difficile à voir sans qu'on pointe le scénario précis.
+
+**Incidents Git en cours de route, résolus par l'élève avec un minimum d'aide :**
+- A committé un premier lot de fichiers **vides** (créés mais pas encore remplis) avant d'avoir terminé — a compris l'erreur seul après qu'on lui ait montré la différence entre `git status` (staged vs unstaged) et le contenu réel sur GitHub.
+- A demandé et bien appliqué `git add .` depuis un sous-dossier (`src/`) comme stratégie pour éviter de toucher `.gitignore` par erreur — bonne généralisation d'un problème vécu 2 séances plus tôt.
+- A oublié une fois `git add` avant `git commit` (erreur "nothing to commit" non comprise sur le coup) — corrigée après un rappel du cycle complet.
+- A géré 4 cycles add/commit/push dans cette seule séance, sans erreur destructrice, avec un niveau de vérification (`git status`, `git diff --staged`) proche de ce qu'on attend d'un débutant sérieux plutôt que d'un pur débutant.
+
+## Niveau global (après 2 séances, 6 exercices + 1 refactoring spontané + 1 transfert autonome complet)
+
+- **Git : progression réelle au-delà des bases.** L'élève ne se contente plus d'exécuter les commandes une par une sur instruction : il choisit lui-même une stratégie (`git add .` scopé à un sous-dossier) pour éviter un problème déjà rencontré, et diagnostique des erreurs de séquence (`add` oublié, commit de fichiers vides) avec un minimum d'aide. Reste à voir : conflits de merge, toujours pas rencontrés en situation réelle.
+- **Spring Boot : le transfert de compétence à une nouvelle entité est confirmé.** Ce n'était pas garanti — beaucoup d'élèves reproduisent un pattern sur le même objet sans être capables de le repartir de zéro sur un objet différent. Ici la généralisation à `Livre` a été quasi immédiate, avec zéro erreur de placement d'annotation (le point faible identifié il y a 2 séances) et une bonne anticipation métier spontanée (valeur par défaut).
+- **Nouveau type d'erreur à noter, plus subtil que les précédents** : angle mort sur un cas non-nominal (update sans champ optionnel) — pas une faute d'inattention mais un manque de réflexe "quels sont tous les scénarios d'entrée possibles ?". C'est un pas au-dessus des bugs précédents (typos, mauvais placement) : ça demande de tester mentalement plusieurs chemins d'exécution, une compétence à développer explicitement dans les prochaines séances (poser systématiquement la question "que se passe-t-il si ce champ est absent/null/vide ?" avant de considérer une méthode terminée).
+- **Méthode de travail : la relecture critique commence à s'installer au niveau architecture (mapper spontané), mais pas encore systématiquement au niveau des cas limites d'une méthode.** Prochaine étape logique.
+
 ### Prochaine séance : sujets en attente
-- **Priorité** : appliquer DTO + Mapper + validation + gestion d'erreurs au `LivreController` en autonomie quasi complète — test direct du transfert de compétence sur une nouvelle entité (pas juste de la répétition sur `Produit`).
-- Explorer MapStruct une fois ce transfert confirmé.
-- Git avancé (conflits de merge, `pull`, `clone`) toujours en attente si l'élève préfère y revenir avant.
+- Introduire une pratique explicite de "test des cas limites" (valeurs null, vides, négatives, absentes) comme réflexe systématique avant de considérer un endpoint terminé — construire sur le bug `disponibiliter` de cette séance.
+- Explorer MapStruct maintenant que le pattern manuel est bien consolidé sur 2 entités.
+- Git avancé (conflits de merge, `pull`, `clone`) — toujours en attente, pourrait maintenant être abordé car les bases sont solides.
