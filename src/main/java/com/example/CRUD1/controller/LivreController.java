@@ -23,25 +23,25 @@ public class LivreController {
     //liste des livres
     @GetMapping
     public List<LivreResponseDTO> lister() {
-        return LivreMapper.livreResponseDTOList(livreService.getAll());
+        return LivreMapper.toResponseDTOList(livreService.getAll());
     }
     //recuperer un livre
     @GetMapping("/{id}")
     public LivreResponseDTO rechercher(@PathVariable Long id) {
-        return LivreMapper.toLivreResponseDTO(livreService.rechercher(id));
+        return LivreMapper.toResponseDTO(livreService.rechercher(id));
     }
 
     //inserer un livre
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LivreResponseDTO inserer(@Valid @RequestBody LivreRequestDTO dto) {
-        return LivreMapper.toLivreResponseDTO(livreService.inserer(LivreMapper.toEntity(dto)));
+        return LivreMapper.toResponseDTO(livreService.inserer(LivreMapper.toEntity(dto)));
     }
 
     //modifier un livre
     @PutMapping("/{id}")
     public LivreResponseDTO modifier(@Valid @RequestBody LivreRequestDTO dto, @PathVariable Long id) {
-        return LivreMapper.toLivreResponseDTO(livreService.modifier(LivreMapper.toEntity(dto), id));
+        return LivreMapper.toResponseDTO(livreService.modifier(LivreMapper.toEntity(dto), id));
     }
 
     //supprimer un livre

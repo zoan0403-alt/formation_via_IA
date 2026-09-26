@@ -12,13 +12,13 @@ public class LivreMapper {
     public static Livre toEntity(LivreRequestDTO dto){
         return new Livre(null, dto.getTitre(), dto.getAuteur(), dto.getAnneePublication(), dto.getDisponibiliter());
     }
-    public static LivreResponseDTO toLivreResponseDTO(Livre livre){
+    public static LivreResponseDTO toResponseDTO(Livre livre){
         return new LivreResponseDTO(livre.getId(), livre.getTitre(), livre.getAuteur(), livre.getAnneePublication(), livre.getDisponibiliter());
     }
-    public static List<LivreResponseDTO> livreResponseDTOList(List<Livre> livres){
+    public static List<LivreResponseDTO> toResponseDTOList(List<Livre> livres){
         List<LivreResponseDTO> liste=new ArrayList<>();
         for(Livre livre:livres){
-            liste.add(LivreMapper.toLivreResponseDTO(livre));
+            liste.add(LivreMapper.toResponseDTO(livre));
         }
         return liste;
     }
