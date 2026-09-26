@@ -1,7 +1,12 @@
 package com.example.CRUD1.controller;
 
+import com.example.CRUD1.dto.ProduitRequestDTO;
+import com.example.CRUD1.dto.ProduitResponseDTO;
 import com.example.CRUD1.entity.Produit;
+import com.example.CRUD1.mapper.ProduitMapper;
 import com.example.CRUD1.service.ProduitService;
+import jakarta.validation.Valid;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,23 +21,29 @@ public class ProduitController {
     public ProduitController(ProduitService produitService) {
         this.produitService = produitService;
     }
+
     @GetMapping
-    public List<Produit> getAll(){return produitService.listeProduit();}
+    public List<ProduitResponseDTO> getAll(){
+        return ProduitMapper.toResponseDTOList(produitService.listeProduit());
+    }
 
     @GetMapping("/{id}")
-    public Produit getOne(@PathVariable Long id){
-        return produitService.rechercherProduit(id);
+    public ProduitResponseDTO getOne(@PathVariable Long id){
+        return ProduitMapper.toResponseDTO(produitService.rechercherProduit(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produit create(@RequestBody Produit p){
-        return produitService.ajouter(p);
+    public ProduitResponseDTO create(@Valid @RequestBody ProduitRequestDTO dto){
+        Produit produit=ProduitMapper.toEntity(dto);
+        produit=produitService.ajouter(produit);
+         ProduitResponseDTO sortieP=ProduitMapper.toResponseDTO(produit);
+        return sortieP;
     }
 
     @PutMapping("/{id}")
-    public Produit update(@PathVariable Long id,@RequestBody Produit p){
-        return produitService.modifier(id,p);
+    public ProduitResponseDTO update(@PathVariable Long id,@Valid @RequestBody ProduitRequestDTO p){
+       return ProduitMapper.toResponseDTO(produitService.modifier(id,ProduitMapper.toEntity(p)));
     }
 
     @DeleteMapping("/{id}")
@@ -40,5 +51,8 @@ public class ProduitController {
     public void delete(@PathVariable Long id){
         produitService.supprimer(id);
     }
-
+    @GetMapping("/recherche")
+    public List<ProduitResponseDTO> fouchette(@RequestParam double prixMin, @RequestParam double prixMax){
+        return ProduitMapper.toResponseDTOList(produitService.fouchette(prixMin,prixMax));
+    }
 }

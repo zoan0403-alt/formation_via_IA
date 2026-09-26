@@ -45,4 +45,12 @@ public class ProduitService {
         produitRepository.delete(existant);
     }
 
+    //rechercher dans une fouchette de prix
+    public List<Produit> fouchette(double min, double max){
+        if(min > max){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"fouchette de prix invalide: le min doit etre inferieur au max");
+        }
+        return produitRepository.findByPrixBetween(min,max);
+    }
+
 }

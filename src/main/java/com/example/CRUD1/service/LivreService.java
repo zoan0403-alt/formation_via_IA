@@ -28,6 +28,9 @@ public class LivreService {
 
     //inserer un livre
     public Livre inserer(Livre livre){
+        if(livre.getDisponibiliter()==null){
+            livre.setDisponibiliter(true);
+        }
         return livreRepository.save(livre);
     }
     //modifier un livre

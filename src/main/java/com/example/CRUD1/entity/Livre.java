@@ -11,7 +11,6 @@ public class Livre {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String titre;
     private String auteur;
     private int anneePublication;
@@ -37,7 +36,6 @@ public class Livre {
     public Long getId() {
         return id;
     }
-    @NotBlank(message = "Le titre ne doit pas etre vide")
     public String getTitre() {
         return titre;
     }

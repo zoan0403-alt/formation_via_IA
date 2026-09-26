@@ -1,6 +1,9 @@
 package com.example.CRUD1.controller;
 
+import com.example.CRUD1.dto.LivreRequestDTO;
+import com.example.CRUD1.dto.LivreResponseDTO;
 import com.example.CRUD1.entity.Livre;
+import com.example.CRUD1.mapper.LivreMapper;
 import com.example.CRUD1.service.LivreService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,27 +22,26 @@ public class LivreController {
 
     //liste des livres
     @GetMapping
-    public List<Livre> lister() {
-        return livreService.getAll();
+    public List<LivreResponseDTO> lister() {
+        return LivreMapper.livreResponseDTOList(livreService.getAll());
     }
-
     //recuperer un livre
     @GetMapping("/{id}")
-    public Livre rechercher(@PathVariable Long id) {
-        return livreService.rechercher(id);
+    public LivreResponseDTO rechercher(@PathVariable Long id) {
+        return LivreMapper.toLivreResponseDTO(livreService.rechercher(id));
     }
 
     //inserer un livre
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Livre inserer(@Valid @RequestBody Livre livre) {
-        return livreService.inserer(livre);
+    public LivreResponseDTO inserer(@Valid @RequestBody LivreRequestDTO dto) {
+        return LivreMapper.toLivreResponseDTO(livreService.inserer(LivreMapper.toEntity(dto)));
     }
 
     //modifier un livre
     @PutMapping("/{id}")
-    public Livre modifier(@RequestBody Livre livre, @PathVariable Long id) {
-        return livreService.modifier(livre, id);
+    public LivreResponseDTO modifier(@Valid @RequestBody LivreRequestDTO dto, @PathVariable Long id) {
+        return LivreMapper.toLivreResponseDTO(livreService.modifier(LivreMapper.toEntity(dto), id));
     }
 
     //supprimer un livre
