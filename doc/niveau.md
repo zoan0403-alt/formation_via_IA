@@ -136,8 +136,25 @@ L'élève a posé de lui-même la question "y a-t-il un moyen plus rapide ?" en 
 - **Confirmation de la leçon méthodologique** : poser le "pourquoi" avant le code élimine le décrochage. Cette méthode a été appliquée avec succès sur 2 sujets consécutifs (DTO, Mapper) après l'avoir identifiée sur `ControllerAdvice`.
 - **Point à travailler toujours en priorité** : relecture systématique avant soumission — toujours présent mais fréquence d'erreurs de câblage en légère baisse sur les tâches répétées (le mapper a été branché sans bug, contrairement au premier mapping manuel).
 
+### Séance du 2026-09-26 (suite 3) — Généralisation du Mapper à `getAll()`, `getOne()`, `update()`
+
+Terminé en quasi-autonomie complète (guidage minimal, principalement des questions de vérification plutôt que de la décomposition pas-à-pas comme au début de la séance).
+
+- A conçu seul `toResponseDTOList(List<Produit>)` en réutilisant sa propre méthode `toResponseDTO`, y compris le raisonnement sur la boucle — seule remarque : convention de nommage Java (variable `Produits` avec majuscule au lieu de `produits`), corrigée immédiatement.
+- **Seule vraie erreur de la série** : a placé `@Valid` sur `@PathVariable Long id` au lieu de `@RequestBody ProduitRequestDTO p` dans `update()` — erreur de placement d'annotation plausible (les deux sont des paramètres de méthode), corrigée en une seule question ("est-ce que `id` a des annotations de validation dessus ?").
+- A terminé `getOne()` sans aucune erreur, entièrement seul, sans étapes intermédiaires demandées.
+- A testé l'ensemble du controller de bout en bout avant de déclarer la tâche terminée — réflexe de vérification maintenant bien ancré et systématique sur ce type de tâche.
+
+**Résumé de la progression sur cette séance complète (DTO + Mapper)** : première moitié (DTO de base) encore guidée pas à pas avec plusieurs questions par ligne ; deuxième moitié (généralisation Mapper à 3 méthodes supplémentaires) réalisée avec un guidage réduit de moitié environ, une seule vraie erreur récurrente (placement d'annotation) au lieu de plusieurs par exercice comme en début de formation. **Vitesse d'autonomisation la plus nette observée jusqu'ici sur un pattern donné.**
+
+## Niveau global (après 2 séances, 6 exercices + 1 refactoring spontané + 1 généralisation autonome)
+
+- **Git : stable.**
+- **Spring Boot : accélération de l'autonomie clairement mesurable.** Sur le pattern DTO+Mapper, l'élève est passé d'un guidage question-par-question à une quasi-autonomie en une seule séance, une fois le "pourquoi" posé au départ. C'est la preuve la plus concrète à ce jour que la méthode (poser le "pourquoi" avant le code, puis laisser une décomposition de plus en plus légère à mesure que le pattern se répète) fonctionne pour cet élève.
+- **Erreur récurrente restante, mais de plus en plus rare et de plus en plus vite auto-corrigée** : placement d'annotations sur le mauvais paramètre/objet (vu sur `@RequestParam` vs `@PathVariable`, sur `@ExceptionHandler`, maintenant sur `@Valid`). C'est un point de vocabulaire/habitude Spring MVC spécifique, pas un problème de compréhension du concept — à surveiller mais plus la peine d'insister dessus à chaque fois, une question suffit maintenant à corriger.
+- **Point suivant à surveiller** : est-ce que cette autonomie tient si on change de contexte (nouvelle entité, `LivreController`) plutôt que de rester sur `Produit` où le pattern a été répété 6 fois ? Bon test de transfert pour la prochaine séance.
+
 ### Prochaine séance : sujets en attente
-- Finir le pattern DTO + Mapper sur `getAll()`, `getOne()`, `update()` de `ProduitController` (répétition/consolidation, en autonomie si possible pour tester la rétention).
-- Appliquer DTO + Mapper + validation + gestion d'erreurs au `LivreController` (généralisation à une autre entité, bon test de transfert).
-- Explorer MapStruct une fois le pattern manuel bien consolidé.
+- **Priorité** : appliquer DTO + Mapper + validation + gestion d'erreurs au `LivreController` en autonomie quasi complète — test direct du transfert de compétence sur une nouvelle entité (pas juste de la répétition sur `Produit`).
+- Explorer MapStruct une fois ce transfert confirmé.
 - Git avancé (conflits de merge, `pull`, `clone`) toujours en attente si l'élève préfère y revenir avant.
