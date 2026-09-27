@@ -209,8 +209,26 @@ Sujet demandé explicitement par l'élève après avoir refusé une piste que je
 - **Point de vigilance mineur, nouveau** : le suivi de "c'est fait" doit systématiquement être vérifié côté formateur — un cas cette séance où l'annonce de correction ne correspondait pas encore à la réalité sur GitHub. Pas un défaut de compréhension, plutôt un oubli mécanique (sauvegarde/commit) déjà vu en fin de journée de formation dense — probablement lié à la fatigue après une longue séance plutôt qu'à une lacune.
 - **Méthode de travail : plus haut niveau atteint à ce jour.** L'élève pilote maintenant le choix des sujets ("continuons l'apprentissage général" plutôt que le sujet que je proposais), pose des questions de clarification pertinentes avant d'agir plutôt que de deviner, et sait distinguer et verbaliser clairement quand il lui manque une connaissance factuelle plutôt que de la deviner indéfiniment.
 
+## Séance du 2026-09-27 (suite) — Exploitation du côté `@OneToMany` (`GET /auteurs/{id}/livres`)
+
+Question posée spontanément par l'élève lui-même ("mesLivres n'est pas vraiment laissé de côté, on peut construire ça ?") — encore une fois l'élève identifie de lui-même un angle mort de la conception précédente plutôt que d'attendre qu'on le lui signale.
+
+- A correctement choisi un endpoint dédié plutôt que d'embarquer la liste dans `AuteurResponseDTO`, en identifiant lui-même le risque de boucle infinie récurrente.
+- A proposé une première solution (surcharger `LivreResponseDTO` avec un constructeur sans auteur) puis, après une question sur les conséquences (champ `null` visible dans le JSON), a choisi lui-même la séparation stricte en nouvelle classe (`LivreSansAuteurDTO`) — bon arbitrage de conception, changement d'avis motivé par le raisonnement plutôt que buté sur sa première idée.
+- A correctement raisonné sur `404 Not Found` vs liste vide pour distinguer "auteur inexistant" de "auteur sans livre" — a d'abord confondu `404`/`400` dans le vocabulaire (facilement corrigé), mais le raisonnement métier sous-jacent était juste dès le départ.
+- A retrouvé seul le nom `findByAuteurId`/`findByAuteur` par query derivation (déjà vu en tout début de formation, bonne rétention à 3 séances d'écart).
+
+**Plusieurs bugs de câblage typiques de fin de journée, plus nombreux que d'habitude** : nom de méthode capitalisé (`ListerParAuteur`), check `null` incohérent avec la décision métier déjà actée, retour du mauvais type (`List<Livre>` au lieu du DTO), noms de méthodes mapper incohérents entre l'appel et la déclaration (`toLivreSansAuteurReponseDTO` vs `toLivreSansAuteurDTO`), et surtout un **bug fonctionnel réel et sérieux** : une méthode de controller qui s'appelait elle-même récursivement (`return livreParAuteur(auteurId);` au lieu d'appeler le service) — aurait provoqué un `StackOverflowError` en production. Combiné à un `@PathVariable` dont le nom ne correspondait pas au nom dans l'URL. **Ces deux bugs corrigés seulement après question explicite, pas vus spontanément** — contrairement au reste de la séance où le raisonnement de conception était solide. Cohérent avec la fatigue de fin d'une très longue séance (plusieurs heures, sujets denses).
+
+## Niveau global (après 3 séances, système CRUD + relations JPA complet et fonctionnel)
+
+- **Spring Boot : le raisonnement de conception (couches, DTO, gestion d'erreurs, relations, cas 404 vs liste vide) est maintenant fiable et largement autonome.** L'exécution technique fine (nommage cohérent, câblage exact des appels) reste le point faible résiduel, et se dégrade visiblement en fin de longue séance — pattern de fatigue plus que de compréhension. Un bug sérieux (récursion infinie) est passé inaperçu de l'élève lui-même une fois, à surveiller : encourager une relecture ligne par ligne systématique avant de déclarer "c'est fait", en particulier en fin de séance.
+- **Méthode de travail : l'élève identifie maintenant lui-même, de façon répétée, les angles morts de ses propres constructions précédentes** (le "pourquoi pas mesLivres", avant ça "pourquoi pas un message de statut dans le DTO") — signe d'une vraie appropriation de l'architecture construite, pas juste de l'exécution de consignes.
+- **Recommandation pour les prochaines séances** : prévoir des séances plus courtes ou une pause explicite avant les exercices de fin de séance, pour limiter les bugs de fatigue (nommage, câblage) qui contrastent avec la qualité du raisonnement en début/milieu de séance.
+
 ### Prochaine séance : sujets en attente
-- Test des cas limites (null, vide, négatif, absent) comme réflexe systématique — reporté deux fois par choix de l'élève, à réintroduire naturellement lors d'un prochain exercice plutôt qu'en sujet dédié isolé.
+- Test des cas limites (null, vide, négatif, absent) comme réflexe systématique — à réintroduire naturellement lors d'un prochain exercice.
 - Explorer MapStruct maintenant que le pattern manuel est bien consolidé sur 3 entités avec relations.
 - Git avancé (conflits de merge, `pull`, `clone`) — toujours en attente.
-- Bon prochain sujet architectural naturel : relations `@ManyToMany` (ex: un livre à plusieurs genres/catégories), ou tests automatisés (JUnit/Mockito) pour commencer à valider ce gros système sans tout retester à la main dans Postman à chaque fois.
+- Relations `@ManyToMany` (ex: livres/catégories), ou tests automatisés (JUnit/Mockito) pour commencer à valider ce système sans tout retester à la main.
+- Envisager de commencer les prochaines séances par une relecture rapide du code produit en fin de séance précédente (les 2 bugs de fatigue de cette séance), pour ancrer le réflexe de relecture avant de clore un exercice.
