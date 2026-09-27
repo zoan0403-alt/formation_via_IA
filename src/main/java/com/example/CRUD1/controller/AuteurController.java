@@ -2,6 +2,7 @@ package com.example.CRUD1.controller;
 
 import com.example.CRUD1.dto.AuteurRequestDTO;
 import com.example.CRUD1.dto.AuteurResponseDTO;
+import com.example.CRUD1.dto.LivreSansAuteurDTO;
 import com.example.CRUD1.entity.Auteur;
 import com.example.CRUD1.mapper.AuteurMapper;
 import com.example.CRUD1.service.AuteurService;
@@ -40,5 +41,10 @@ public class AuteurController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){ auteurService.delete(id);}
+    //chercher tous les livres d'un auteur
 
+    @GetMapping("/{id}/livres")
+    public List<LivreSansAuteurDTO> livreParAuteur(@PathVariable Long auteurId){
+        return livreParAuteur(auteurId);
+    }
 }

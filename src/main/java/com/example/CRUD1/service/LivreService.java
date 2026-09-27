@@ -2,6 +2,7 @@ package com.example.CRUD1.service;
 
 import com.example.CRUD1.dto.LivreRequestDTO;
 import com.example.CRUD1.dto.LivreResponseDTO;
+import com.example.CRUD1.dto.LivreSansAuteurDTO;
 import com.example.CRUD1.entity.Auteur;
 import com.example.CRUD1.entity.Livre;
 import com.example.CRUD1.mapper.LivreMapper;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,5 +67,15 @@ public class LivreService {
         Livre existant=rechercher(id);
         livreRepository.delete(existant);
     }
+    //chercher livre par auteur
+    public List<LivreSansAuteurDTO> listerParAuteur(Long auteurId){
+         Auteur auteur=auteurRepository.findById(auteurId)
+                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Cette auteur n'existe pas"));
+        List <LivreSansAuteurDTO> livres=new ArrayList<>();
+          for(Livre livre: livreRepository.findByAuteur(auteur)){
+              livres.add(LivreMapper.toLivreSansAuteurDTO(livre));
+        }
+            return livres;
+        }
+    }
 
-}
