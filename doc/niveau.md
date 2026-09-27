@@ -180,7 +180,37 @@ Test de transfert : appliquer DTO + Mapper à une **nouvelle entité** (`Livre`)
 - **Nouveau type d'erreur à noter, plus subtil que les précédents** : angle mort sur un cas non-nominal (update sans champ optionnel) — pas une faute d'inattention mais un manque de réflexe "quels sont tous les scénarios d'entrée possibles ?". C'est un pas au-dessus des bugs précédents (typos, mauvais placement) : ça demande de tester mentalement plusieurs chemins d'exécution, une compétence à développer explicitement dans les prochaines séances (poser systématiquement la question "que se passe-t-il si ce champ est absent/null/vide ?" avant de considérer une méthode terminée).
 - **Méthode de travail : la relecture critique commence à s'installer au niveau architecture (mapper spontané), mais pas encore systématiquement au niveau des cas limites d'une méthode.** Prochaine étape logique.
 
+## Séance du 2026-09-27 — Relations JPA (`@ManyToOne`/`@OneToMany`, entité `Auteur`)
+
+Sujet demandé explicitement par l'élève après avoir refusé une piste que je proposais (le réflexe "cas limites" identifié la veille) au profit de "l'apprentissage général" — signe qu'il pilote maintenant activement le contenu de sa formation plutôt que de suivre passivement.
+
+**"Pourquoi" posé en premier (méthode maintenant systématique de mon côté) : bon accueil, aucun décrochage.** L'élève a identifié seul, à partir de 3 questions concrètes sur les limites d'un champ `String auteur`, le besoin d'une entité séparée avec relation un-à-plusieurs — raisonnement de conception mené sans aide.
+
+**Où la connaissance factuelle manquait vraiment (pas déductible), la posture a changé de façon notable :**
+- Sur `@ManyToOne`, l'élève a tenté de mettre `private Long auteur_id` — confusion entre "la clé étrangère en base" et "le type du champ Java" (qui doit être l'entité elle-même, pas son id). Une fois qu'il a compris qu'il ne connaissait pas encore ce mécanisme, il a **dit stop clairement** ("j'ai même pas eu de cours là-dessus, tu veux me faire deviner ce que je connais pas") plutôt que de continuer à deviner à l'aveugle. **Réaction très positive à documenter** : contrairement à la séance ControllerAdvice (où il avait suivi sans comprendre jusqu'à saturation), cette fois il a coupé court immédiatement, dès la première itération infructueuse. Nette progression dans sa capacité à distinguer "je peux déduire" de "c'est de la syntaxe à apprendre", et à le signaler tôt.
+- Une fois l'explication factuelle donnée directement (comme convenu, sans chercher à faire deviner de la syntaxe pure), a immédiatement appliqué correctement `@ManyToOne`/`@JoinColumn`/`@OneToMany(mappedBy=...)` sans erreur supplémentaire.
+
+**Raisonnement de conception solide sur toute la suite, en questions-réponses plutôt qu'en corrections d'erreurs :**
+- A identifié seul la tension "mapper statique vs besoin d'accès à un repository" et proposé la bonne solution (déplacer la résolution de l'auteur dans le service).
+- A conçu seul le DTO d'entrée avec `auteurId` (`Long`), la validation combinée `@NotNull`+`@Positive` (bug `@NotBlank` sur type numérique **auto-détecté et corrigé sans aide** cette fois — contrairement à la même erreur exacte deux séances plus tôt sur `Produit`, signe de rétention réelle).
+- A identifié tout seul le risque de **boucle infinie** de sérialisation JSON en exposant l'entité `Auteur` (avec sa liste `mesLivres`) dans un DTO de réponse — a d'abord fait l'erreur (mis l'entité brute), mais **après une seule question de relecture**, a proposé et implémenté correctement un `AuteurResponseDTO` imbriqué sans la liste. Comprend maintenant intuitivement pourquoi ne jamais exposer une entité JPA brute, pas seulement par obéissance à la règle.
+- A generalisé en autonomie complète la création d'`AuteurService`/`AuteurController`/`AuteurRequestDTO`/`AuteurResponseDTO`/`AuteurMapper` en une seule fois, en appliquant directement le pattern final (DTO dès le départ, pas d'étape "entité brute" intermédiaire) — **sans qu'on le lui demande explicitement à ce niveau de détail**.
+
+**Pattern d'erreur toujours présent mais isolé** : le typo `toResponseDTO`/`toRespondeDTO` a refait surface sur `AuteurMapper`, et **la correction n'est pas arrivée du premier coup** malgré un rappel explicite ("c'est fait" annoncé deux fois avant que ce soit vraiment corrigé) — probablement un oubli de sauvegarde locale avant commit plutôt qu'un vrai malentendu. À surveiller : vérifier systématiquement après un "c'est fait" plutôt que de le prendre pour acquis (bonne pratique déjà appliquée par le formateur, à maintenir).
+
+**Test final réussi de bout en bout** : création d'un auteur, création d'un livre référençant cet auteur par id, lecture du livre avec sous-objet auteur imbriqué correctement formé, sans boucle infinie. Relation JPA bidirectionnelle pleinement fonctionnelle.
+
+**Bonus — gestion d'erreur générique** : l'élève a lui-même repéré une erreur de désérialisation JSON (mauvais format de date) non gérée proprement, a proposé de la capturer, et a fait un choix de conception réfléchi (message générique plutôt que spécifique à un seul type d'erreur, après avoir soupesé la complexité d'une solution plus précise basée sur `exception.getCause()`) — nouvelle preuve de jugement d'ingénieur (complexité vs bénéfice), pas seulement d'exécution.
+
+## Niveau global (après 3 séances, relations JPA fonctionnelles)
+
+- **Git : stable, non retesté aujourd'hui.**
+- **Spring Boot : l'élève raisonne maintenant en architecte sur les nouveaux problèmes (boucle infinie de sérialisation, tension mapper/repository, choix de granularité des messages d'erreur), et distingue de mieux en mieux ce qui est déductible de ce qui doit être appris factuellement — et le signale plus tôt qu'avant quand il est dans ce deuxième cas.** Rétention confirmée sur plusieurs points déjà vus (validation sur type numérique, boucle infinie DTO, pattern mapper). Les relations JPA (`@ManyToOne`/`@OneToMany`/`mappedBy`), sujet réputé difficile pour les débutants, ont été acquises en une seule séance sans blocage prolongé.
+- **Point de vigilance mineur, nouveau** : le suivi de "c'est fait" doit systématiquement être vérifié côté formateur — un cas cette séance où l'annonce de correction ne correspondait pas encore à la réalité sur GitHub. Pas un défaut de compréhension, plutôt un oubli mécanique (sauvegarde/commit) déjà vu en fin de journée de formation dense — probablement lié à la fatigue après une longue séance plutôt qu'à une lacune.
+- **Méthode de travail : plus haut niveau atteint à ce jour.** L'élève pilote maintenant le choix des sujets ("continuons l'apprentissage général" plutôt que le sujet que je proposais), pose des questions de clarification pertinentes avant d'agir plutôt que de deviner, et sait distinguer et verbaliser clairement quand il lui manque une connaissance factuelle plutôt que de la deviner indéfiniment.
+
 ### Prochaine séance : sujets en attente
-- Introduire une pratique explicite de "test des cas limites" (valeurs null, vides, négatives, absentes) comme réflexe systématique avant de considérer un endpoint terminé — construire sur le bug `disponibiliter` de cette séance.
-- Explorer MapStruct maintenant que le pattern manuel est bien consolidé sur 2 entités.
-- Git avancé (conflits de merge, `pull`, `clone`) — toujours en attente, pourrait maintenant être abordé car les bases sont solides.
+- Test des cas limites (null, vide, négatif, absent) comme réflexe systématique — reporté deux fois par choix de l'élève, à réintroduire naturellement lors d'un prochain exercice plutôt qu'en sujet dédié isolé.
+- Explorer MapStruct maintenant que le pattern manuel est bien consolidé sur 3 entités avec relations.
+- Git avancé (conflits de merge, `pull`, `clone`) — toujours en attente.
+- Bon prochain sujet architectural naturel : relations `@ManyToMany` (ex: un livre à plusieurs genres/catégories), ou tests automatisés (JUnit/Mockito) pour commencer à valider ce gros système sans tout retester à la main dans Postman à chaque fois.
