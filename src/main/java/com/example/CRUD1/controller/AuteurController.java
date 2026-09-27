@@ -6,6 +6,7 @@ import com.example.CRUD1.dto.LivreSansAuteurDTO;
 import com.example.CRUD1.entity.Auteur;
 import com.example.CRUD1.mapper.AuteurMapper;
 import com.example.CRUD1.service.AuteurService;
+import com.example.CRUD1.service.LivreService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,11 @@ import java.util.List;
 @RequestMapping("/api/auteurs")
 public class AuteurController {
     private final AuteurService auteurService;
+    private final LivreService livreService;
 
-    public AuteurController(AuteurService auteurService) {
+    public AuteurController(AuteurService auteurService, LivreService livreService) {
         this.auteurService = auteurService;
+        this.livreService = livreService;
     }
     //aujouter un auteur
     @PostMapping()
@@ -44,7 +47,7 @@ public class AuteurController {
     //chercher tous les livres d'un auteur
 
     @GetMapping("/{id}/livres")
-    public List<LivreSansAuteurDTO> livreParAuteur(@PathVariable Long auteurId){
-        return livreParAuteur(auteurId);
+    public List<LivreSansAuteurDTO> livreParAuteur(@PathVariable Long id){
+        return livreService.listerParAuteur(id);
     }
 }
