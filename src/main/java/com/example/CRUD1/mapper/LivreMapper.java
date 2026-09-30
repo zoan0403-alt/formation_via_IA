@@ -16,7 +16,7 @@ public class LivreMapper {
     }
     public static LivreResponseDTO toResponseDTO(Livre livre){
         AuteurResponseDTO auteur=new AuteurResponseDTO(livre.getAuteur().getId(),livre.getAuteur().getNom(),livre.getAuteur().getNationalite(),livre.getAuteur().getDateNaissance());
-        return new LivreResponseDTO(livre.getId(), livre.getTitre(),auteur, livre.getAnneePublication(), livre.getDisponibiliter());
+        return new LivreResponseDTO(livre.getId(), livre.getTitre(),auteur, livre.getAnneePublication(), livre.getDisponibiliter(),CategorieMapper.toList(livre.getCategories()));
     }
     public static LivreSansAuteurDTO toLivreSansAuteurDTO(Livre livre){
         return new LivreSansAuteurDTO(livre.getId(), livre.getTitre(), livre.getAnneePublication(),livre.getDisponibiliter());

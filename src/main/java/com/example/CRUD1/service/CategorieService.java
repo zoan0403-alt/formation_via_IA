@@ -14,11 +14,11 @@ import java.util.List;
 @Service
 public class CategorieService {
     private final CategorieRepository categorieRepository;
-    private final LivreRepository livreRepository;
+    //private final LivreRepository livreRepository;
 
-    public CategorieService(CategorieRepository categorieRepository, LivreService livreService, LivreRepository livreRepository) {
+    public CategorieService(CategorieRepository categorieRepository) {
         this.categorieRepository = categorieRepository;
-        this.livreRepository = livreRepository;
+        //this.livreRepository = livreRepository;
     }
     //ajouter un livre
     public Categorie insert(Categorie categorie){

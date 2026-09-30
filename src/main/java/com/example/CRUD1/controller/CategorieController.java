@@ -28,7 +28,6 @@ public class CategorieController {
     }
     //modifier une categorie
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CategorieSansLivreDTO update(@Valid @RequestBody CategorieRequestDTO categorie, @PathVariable Long id){
         return CategorieMapper.toReponseDTO(categorieService.update(CategorieMapper.toEntity(categorie),id));
     }
@@ -41,6 +40,12 @@ public class CategorieController {
     @GetMapping()
     public List<CategorieSansLivreDTO> getAll(){
         return CategorieMapper.toList(categorieService.getAll());
+    }
+    //supprimer un livre
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        categorieService.delete(id);
     }
     //avoir tous les livres d'une categorie
 

@@ -15,8 +15,8 @@ public class CategorieRequestDTO {
     public CategorieRequestDTO() {
     }
 
-    public CategorieRequestDTO(String description) {
-
+    public CategorieRequestDTO(String nom, String description) {
+        this.nom = nom;
         this.description = description;
     }
 
