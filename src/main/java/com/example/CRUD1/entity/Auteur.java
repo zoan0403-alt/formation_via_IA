@@ -16,6 +16,8 @@ public class Auteur {
 
     @OneToMany(mappedBy = "auteur")
     private List<Livre> mesLivres;
+    @OneToOne(mappedBy = "auteur")
+    private ProfilAuteur profilAuteur;
     public Auteur() {    }
 
     public Auteur(Long id, String nom, String nationalite, Date dateNaissance ) {
@@ -60,5 +62,13 @@ public class Auteur {
 
     public void setMesLivres(List<Livre> mesLivres) {
         this.mesLivres = mesLivres;
+    }
+
+    public ProfilAuteur getProfilAuteur() {
+        return profilAuteur;
+    }
+
+    public void setProfilAuteur(ProfilAuteur profilAuteur) {
+        this.profilAuteur = profilAuteur;
     }
 }
