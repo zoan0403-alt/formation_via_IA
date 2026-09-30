@@ -3,6 +3,8 @@ package com.example.CRUD1.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 @Entity
 public class Livre {
     @Id
@@ -15,6 +17,12 @@ public class Livre {
     @ManyToOne
     @JoinColumn(name = "auteur_id")
     private Auteur auteur;
+    @ManyToMany
+    @JoinTable(name = "livre_categorie",
+            joinColumns = @JoinColumn(name = "livre_id"),
+            inverseJoinColumns = @JoinColumn(name = "categorie_id")
+    )
+    private List<Categorie> categories;
 
     //construteur vide
 
@@ -67,5 +75,13 @@ public class Livre {
 
     public void setDisponibiliter(Boolean disponibiliter) {
         this.disponibiliter = disponibiliter;
+    }
+
+    public List<Categorie> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Categorie> categories) {
+        this.categories = categories;
     }
 }

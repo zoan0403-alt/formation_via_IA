@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(erreurs);
     }
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> gererErreurConversion(){
-        return ResponseEntity.badRequest().body("la structure ou le format des données envoyées est invalide");
-    }
+//    @ExceptionHandler(HttpMessageNotReadableException.class)
+//    public ResponseEntity<?> gererErreurConversion(){
+//        return ResponseEntity.badRequest().body("la structure ou le format des données envoyées est invalide");
+//    }
 
 }

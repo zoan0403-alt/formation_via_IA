@@ -1,12 +1,15 @@
 package com.example.CRUD1.service;
 
+import com.example.CRUD1.dto.CategorieSansLivreDTO;
 import com.example.CRUD1.dto.LivreRequestDTO;
 import com.example.CRUD1.dto.LivreResponseDTO;
 import com.example.CRUD1.dto.LivreSansAuteurDTO;
 import com.example.CRUD1.entity.Auteur;
+import com.example.CRUD1.entity.Categorie;
 import com.example.CRUD1.entity.Livre;
 import com.example.CRUD1.mapper.LivreMapper;
 import com.example.CRUD1.repository.AuteurRepository;
+import com.example.CRUD1.repository.CategorieRepository;
 import com.example.CRUD1.repository.LivreRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,11 +23,13 @@ import java.util.Optional;
 public class LivreService {
     private final LivreRepository livreRepository;
     private final AuteurRepository auteurRepository;
+    private final CategorieRepository categorieRepository;
 
     //Constructeur
-    public LivreService(LivreRepository livreRepository, AuteurRepository auteurRepository) {
+    public LivreService(LivreRepository livreRepository, AuteurRepository auteurRepository, CategorieRepository categorieRepository) {
         this.livreRepository = livreRepository;
         this.auteurRepository = auteurRepository;
+        this.categorieRepository = categorieRepository;
     }
     //liste de tous les livre
     public List<Livre> getAll(){
@@ -36,9 +41,10 @@ public class LivreService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Livre introuvable"));
     }
 
+
     //inserer un livre
     public Livre inserer(LivreRequestDTO dto){
-
+        List<Categorie> categories=categorieRepository.findAllById(dto.getCategorieIds());
          Auteur auteur =auteurRepository.findById(dto.getAuteurId())
                  .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Auteur introuvable"));
         if(dto.getDisponibiliter()==null){
@@ -46,6 +52,7 @@ public class LivreService {
         }
         Livre livre = LivreMapper.toEntity(dto);
         livre.setAuteur(auteur);
+        livre.setCategories(categories);
         return livreRepository.save(livre);
     }
     //modifier un livre
