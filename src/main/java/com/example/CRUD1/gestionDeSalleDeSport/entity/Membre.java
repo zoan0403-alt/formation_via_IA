@@ -15,8 +15,10 @@ public class Membre {
     private int age;
     //plusieurs membres peuvent s'inscrire a plusieurs cours ManyToMany
     @ManyToMany()
-    @JoinTable(name = "menbre_cours", joinColumns = @JoinColumn(name = "cours_id"))
-    private List<Cours> mescours;
+    @JoinTable(name = "menbre_cours",
+            joinColumns = @JoinColumn(name = "membre_id"),
+            inverseJoinColumns = @JoinColumn(name="cours_id"))
+    private List<Cours> mesCours;
     //un meme a au plus un abonnement
     @OneToOne(mappedBy = "membre")
     private Abonnement abonnement;
@@ -30,7 +32,7 @@ public class Membre {
         this.prenom = prenom;
         this.sexe = sexe;
         this.age = age;
-        this.mescours = mescours;
+        this.mesCours = mescours;
         this.abonnement = abonnement;
     }
 
@@ -70,12 +72,12 @@ public class Membre {
         this.age = age;
     }
 
-    public List<Cours> getMescours() {
-        return mescours;
+    public List<Cours> getMesCours() {
+        return mesCours;
     }
 
-    public void setMescours(List<Cours> mescours) {
-        this.mescours = mescours;
+    public void setMesCours(List<Cours> mesCours) {
+        this.mesCours = mesCours;
     }
 
     public Abonnement getAbonnement() {
