@@ -18,16 +18,14 @@ import java.util.List;
 @RequestMapping("/api/coach")
 public class CoachController {
     private final CoachService coachService;
-    private final CoursService coursService;
 
-    public CoachController(CoachService coachService, CoursService coursService) {
+    public CoachController(CoachService coachService) {
         this.coachService = coachService;
-        this.coursService = coursService;
     }
     //ajouter un coach
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CoachSimpleReponseDTO insert(@Valid CoachRequestDTO dto){
+    public CoachSimpleReponseDTO insert(@Valid @RequestBody CoachRequestDTO dto){
         return CoachMapper.toSimpleDto(coachService.insert(CoachMapper.toEntity(dto)));
     }
     //rechercher un coach
@@ -42,7 +40,7 @@ public class CoachController {
     }
     //modifier un coach
     @PutMapping("/{id}")
-    public CoachSimpleReponseDTO update(@PathVariable Long id, @Valid CoachRequestDTO dto){
+    public CoachSimpleReponseDTO update(@PathVariable Long id, @Valid @RequestBody CoachRequestDTO dto){
         return CoachMapper.toSimpleDto(coachService.update(id,CoachMapper.toEntity(dto)));
     }
     //supprimer un coach
@@ -51,7 +49,7 @@ public class CoachController {
     public void delete(@PathVariable Long id){
         // on verifie d'abord qu'il pas de cours a son actif
         List<Cours> cours=coachService.mesCours(id);
-        if (cours.isEmpty()){
+        if (cours.size()>0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Impossible de supprimer ce prof car il dispose des cours a son actif");
         }
         coachService.delete(id);
