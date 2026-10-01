@@ -1,14 +1,10 @@
 package com.example.CRUD1.gestionDeSalleDeSport.repository;
 
 import com.example.CRUD1.gestionDeSalleDeSport.entity.Coach;
-import com.example.CRUD1.gestionDeSalleDeSport.entity.Cours;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface CoursRepository extends JpaRepository<Cours,Long> {
+public interface CoachRepository extends JpaRepository<Coach,Long> {
 
-    List<Cours> findByCoach(Coach coach);
 }

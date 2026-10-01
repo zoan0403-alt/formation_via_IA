@@ -18,6 +18,7 @@ public class CoursService {
     public CoursService(CoursRepository coursRepository) {
         this.coursRepository = coursRepository;
     }
+
     //ajouter un cours
     public Cours insert(Cours cours){
        return coursRepository.save(cours);
@@ -43,7 +44,7 @@ public class CoursService {
     //suprimer un cours 
     public void delete(Long id){
         Cours existant=getOne(id);
-        coursRepository.save(existant);
+        coursRepository.delete(existant);
     }
     //ajouter un participant
     public Cours addMembre(Long id, Membre membre){
@@ -60,7 +61,7 @@ public class CoursService {
     public void deleteMembre(Long id, Membre membre ){ Cours cours=getOne(id);
         List<Membre> membres = getMembres(id);
         for(Membre membre1 : membres){
-            if(membre1==membre){
+            if(membre1.getId().equals(membre.getId())){
                 membres.remove(membre1);
             }
         }
