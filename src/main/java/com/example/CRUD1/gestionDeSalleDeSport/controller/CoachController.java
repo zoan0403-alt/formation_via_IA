@@ -49,7 +49,7 @@ public class CoachController {
     public void delete(@PathVariable Long id){
         // on verifie d'abord qu'il pas de cours a son actif
         List<Cours> cours=coachService.mesCours(id);
-        if (cours.size()>0){
+        if (!cours.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Impossible de supprimer ce prof car il dispose des cours a son actif");
         }
         coachService.delete(id);

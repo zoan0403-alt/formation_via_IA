@@ -30,6 +30,7 @@ public class Cours {
         this.participants = participants;
     }
 
+
     public Long getId() {
         return Id;
     }

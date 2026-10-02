@@ -15,24 +15,14 @@ public class CoursRequestDTO {
     @Positive(message = "la duree ne peut etre negative")
     private int duree;
     private Long coachId;
-    private List<Long> participantsIds;
 
     public CoursRequestDTO() {
     }
 
-    public CoursRequestDTO(String nom, int duree, Long coachId, List<Long> participantsIds) {
+    public CoursRequestDTO(String nom, int duree, Long coachId) {
         this.nom = nom;
         this.duree = duree;
         this.coachId = coachId;
-        this.participantsIds = participantsIds;
-    }
-
-    public List<Long> getParticipantsIds() {
-        return participantsIds;
-    }
-
-    public void setParticipantsIds(List<Long> participantsIds) {
-        this.participantsIds = participantsIds;
     }
 
     public Long getCoachId() {
